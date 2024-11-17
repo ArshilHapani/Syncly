@@ -1,0 +1,9 @@
+[package]
+name = "snapshots"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+flate2 = "1.0.35"
+notify = "7.0.0"
+blake3 = "1.5.4"
