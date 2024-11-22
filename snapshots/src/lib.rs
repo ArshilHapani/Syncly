@@ -35,7 +35,7 @@ pub fn hash_file(path: &PathBuf) -> Result<String, Box<dyn Error>> {
 pub fn capture_snapshot(dir: &PathBuf) -> Snapshot {
     let mut files: HashMap<PathBuf, FileMetaData> = HashMap::new();
     let timestamp: SystemTime = std::time::SystemTime::now();
-
+    // TODO handle the file case
     for entry in read_dir(dir).expect("Failed to read dir") {
         let entry = entry.expect("Failed to read directory");
         let path = entry.path();
@@ -69,7 +69,50 @@ mod hash_file_test {
 
     use super::*;
 
-    /// Try changing the content of `Cargo.toml` file inside **snapshots** dir and rerun the test!
+    fn create_dir_and_files<'a>() -> (PathBuf, Vec<&'static str>) {
+        let dir_path = PathBuf::from("temp_dir");
+        if fs::exists(&dir_path).unwrap() {
+            fs::remove_dir_all(&dir_path).unwrap();
+        }
+        fs::create_dir(&dir_path).unwrap();
+        let files = vec!["1.txt", "2.txt", "3.txt"];
+        for file in files.iter() {
+            let mut new_file = fs::File::create(&dir_path.join(file)).unwrap();
+            let content = format!("file content for {}", file);
+            new_file.write_all(content.as_bytes()).unwrap();
+            new_file.flush().unwrap();
+            new_file.sync_all().unwrap();
+        }
+        (dir_path, files)
+    }
+    fn delete_dir_and_files(dir_path: &PathBuf) -> bool {
+        match fs::remove_dir_all(&dir_path) {
+            Ok(_) => true,
+            Err(_) => false,
+        }
+    }
+
+    fn modifiy_files(dir_path: &PathBuf) {
+        let mut i = 0;
+        for entry in fs::read_dir(dir_path).expect("Failed to read dir") {
+            let entry = entry.expect("Failed to read entry");
+            let path = entry.path();
+
+            if path.is_file() {
+                let mut file = fs::OpenOptions::new()
+                    .write(true)
+                    .truncate(true)
+                    .open(path)
+                    .unwrap();
+                let content = format!("Modified content for file {}.txt", i);
+                file.write_all(content.as_bytes()).unwrap();
+                file.sync_all().unwrap();
+                file.flush().unwrap();
+            }
+            i += 1;
+        }
+    }
+
     #[test]
     fn test_hash_file() {
         let current_dir_str = env!("CARGO_MANIFEST_DIR");
@@ -94,8 +137,7 @@ mod hash_file_test {
         file.flush().unwrap();
         file_1.sync_all().unwrap();
         file.sync_all().unwrap();
-        drop(file);
-        drop(file_1);
+
         fs::remove_file(&file_name).unwrap();
         fs::remove_file(&file_name_1).unwrap();
 
@@ -103,5 +145,25 @@ mod hash_file_test {
             "288a86a79f20a3d6dccdca7713beaed178798296bdfa7913fa2a62d9727bf8f8";
         assert_eq!(hash, hello_world_file_hash);
         assert_ne!(hash_1, hello_world_file_hash);
+    }
+
+    #[test]
+    fn test_capture_snapshot() {
+        let (dir_path, files) = create_dir_and_files();
+
+        // ensures that files and folders are created
+        let dir_exist = fs::exists(&dir_path).unwrap();
+        for file in files.iter() {
+            let file_exist = fs::exists(&dir_path.join(file)).unwrap();
+            assert!(file_exist);
+        }
+        assert!(dir_exist);
+
+        let snapshot = capture_snapshot(&dir_path);
+        assert!(snapshot == snapshot);
+        modifiy_files(&dir_path);
+        let snapshot_2 = capture_snapshot(&dir_path);
+        assert!(snapshot != snapshot_2);
+        delete_dir_and_files(&dir_path);
     }
 }
