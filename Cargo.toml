@@ -2,3 +2,4 @@
 resolver = "2"
 
 members = ["core", "snapshots"]
+package.license = "MIT"

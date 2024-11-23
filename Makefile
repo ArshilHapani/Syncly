@@ -1,4 +1,4 @@
 .PHONY: test-lib
 
 test-lib:
-	@cargo test --lib -- --show-output
+	@cargo test -p snapshots -- --show-output
