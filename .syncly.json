@@ -1,0 +1,7 @@
+{
+  "exclude": [
+    ".git",
+    "node_modules"
+  ],
+  "snapshot_ctn": 0
+}

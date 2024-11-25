@@ -1,4 +1,5 @@
 pub mod initialize;
+pub mod reset;
 
 use clap::{Arg, ArgAction, Command};
 
