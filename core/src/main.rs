@@ -6,7 +6,9 @@ mod state;
 use commands::{build_cli, initialize, reset, sync as sync_cmd};
 use display::show_menu;
 
-fn main() -> Result<(), std::io::Error> {
+use state::SynclyErrorKind;
+
+fn main() -> Result<(), SynclyErrorKind> {
     let matches = build_cli().get_matches();
 
     match matches.subcommand() {
@@ -17,6 +19,6 @@ fn main() -> Result<(), std::io::Error> {
             show_menu();
             std::process::exit(1);
         }
-    }
+    };
     Ok(())
 }

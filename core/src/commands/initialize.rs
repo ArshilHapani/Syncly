@@ -1,14 +1,14 @@
 use clap::ArgMatches;
 use color_print::cprintln;
 use serde_json::to_string_pretty;
-use std::{
-    fs::File,
-    io::{Error, Write},
+use std::{fs::File, io::Write};
+
+use crate::{
+    config::{get_default_config, CONFIG_FILE_NAME, SNAPSHOT_FILE_NAME},
+    state::SynclyErrorKind,
 };
 
-use crate::config::{get_default_config, CONFIG_FILE_NAME, SNAPSHOT_FILE_NAME};
-
-pub fn run(args: &ArgMatches) -> Result<(), Error> {
+pub fn run(args: &ArgMatches) -> Result<(), SynclyErrorKind> {
     let override_config = args.get_flag("force");
 
     let json_data = get_default_config();
@@ -31,6 +31,8 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
         cprintln!("<strong><green>Snapshot file created successfully.</green></strong>");
         let mut file = File::create(CONFIG_FILE_NAME)?;
         file.write(json_string.as_bytes())?;
+        file.sync_all().map_err(|e| SynclyErrorKind::SyncError(e))?;
+        file.flush().map_err(|e| SynclyErrorKind::FlushError(e))?;
         cprintln!("<strong><green>Configuration file created successfully.</green></strong>");
         Ok(())
     }

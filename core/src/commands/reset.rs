@@ -4,9 +4,12 @@ use color_print::cprintln;
 use serde_json::to_string_pretty;
 use snapshots::utils::modify_file_content;
 
-use crate::config::{get_default_config, CONFIG_FILE_NAME, SNAPSHOT_FILE_NAME};
+use crate::{
+    config::{get_default_config, CONFIG_FILE_NAME, SNAPSHOT_FILE_NAME},
+    state::SynclyErrorKind,
+};
 
-pub fn run() -> Result<(), std::io::Error> {
+pub fn run() -> Result<(), SynclyErrorKind> {
     let json_data = get_default_config();
     let json_string = to_string_pretty(&json_data).unwrap_or("".to_string());
 
