@@ -1,5 +1,4 @@
 use notify::{recommended_watcher, Error, RecursiveMode, Watcher};
-
 use std::{path::PathBuf, sync::mpsc::channel};
 
 pub fn watch_directory(dir: &PathBuf) -> Result<(), Error> {

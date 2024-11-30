@@ -7,7 +7,9 @@ use std::{
 #[derive(Debug)]
 pub enum SynclyErrorKind {
     FileOrDirNotFound,
-    OpenError(IOError),
+    SourceFileOrDirNotFound,
+    DestFileOrDirNotFound,
+    // OpenError(IOError),
     FileReadError(IOError),
     WriteError(IOError),
     SyncError(IOError),
@@ -19,7 +21,13 @@ impl Display for SynclyErrorKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::FileOrDirNotFound => write!(f, "Provided file or dir not found"),
-            Self::OpenError(e) => write!(f, "Failed to open file {}", e),
+            Self::SourceFileOrDirNotFound => {
+                write!(f, "Provided source directory or file not found")
+            }
+            Self::DestFileOrDirNotFound => {
+                write!(f, "Provided destination directory or file not found")
+            }
+            // Self::OpenError(e) => write!(f, "Failed to open file {}", e),
             Self::FileReadError(e) => write!(f, "Failed to read file {}", e),
             Self::WriteError(e) => write!(f, "Failed to write content in file {}", e),
             Self::SyncError(e) => write!(f, "Failed to sync the file heads {}", e),

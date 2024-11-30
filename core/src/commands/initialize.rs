@@ -17,6 +17,7 @@ pub fn run(args: &ArgMatches) -> Result<(), SynclyErrorKind> {
     if !override_config
         && (File::open(CONFIG_FILE_NAME).is_ok() || File::open(SNAPSHOT_FILE_NAME).is_ok())
     {
+        // configuration already exist return;
         cprintln!("<strong><r>Configuration file already exists. To override your current config use '-f' or '--force' flag</r></strong>");
         Ok(())
     } else if override_config {

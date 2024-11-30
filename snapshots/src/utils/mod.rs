@@ -1,10 +1,10 @@
 use std::{
     fs,
     io::{Error, Write},
-    path::PathBuf,
+    path::Path,
 };
 
-pub fn modify_file_content(path: &PathBuf, content: &[u8], truncate: bool) -> Result<(), Error> {
+pub fn modify_file_content(path: &Path, content: &[u8], truncate: bool) -> Result<(), Error> {
     let mut file = fs::OpenOptions::new()
         .write(true)
         .truncate(truncate)
