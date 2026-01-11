@@ -1,5 +1,4 @@
 
----
 # **Syncly - File Synchronizer CLI**
 
 Effortlessly synchronize files and directories across devices.
@@ -17,30 +16,6 @@ Effortlessly synchronize files and directories across devices.
 - **Dry-run support** to preview changes before applying them.
 - **Recursive sync** for nested directories.
 - **Verbose logging** for detailed insights.
-
----
-
-## **Installation**
-
-### **Using Cargo**
-```bash
-cargo install syncly
-```
-
-### **From Source**
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/ArshilHapani/syncly.git
-    cd syncly
-    ```
-2. Build and install:
-    ```bash
-    cargo build --release
-    ```
-3. Add the binary to your PATH:
-    ```bash
-    export PATH=$PATH:$(pwd)/target/release
-    ```
 
 ---
 
