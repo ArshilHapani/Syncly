@@ -1,5 +1,4 @@
-**Note:**
-This project, **Syncly**, is currently under active development. Features, functionality, and documentation may change as the project evolves. Contributions and feedback are welcome!
+
 ---
 # **Syncly - File Synchronizer CLI**
 
